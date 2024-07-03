@@ -1,14 +1,12 @@
-# OpenInApp Backend Task
+# Spyne Backend Task
 
-This Task tries to satisfies all the points assigned in the openinapp backend assignment.
+This Task tries to satisfies all the points assigned in the SPYNE backend assignment.
 
 ## Tech Stack
 
 **Server:** Node, Express
 
 **Database:** MySql
-
-**Calling Service:** Twilio
 
 ## Environment Variables
 
@@ -32,12 +30,6 @@ To run this project, you will need to add the following environment variables to
 
 `JWT_SECRET` : Secret for JWT CREATION e.g. "adasdsd"
 
-`TWILIO_ACCOUNT_SID` : Twilio Account SID
-
-`TWILIO_AUTH_TOKEN` : Twilio Account Auth Token
-
-`TWILIO_PHONE_NUMBER` : Twilio Acccount by which reminder call has to be made
-
 `DEPLOYED_BACKEND_HOST` : Publically accessible host of the backend can be a deployed ip or a ngrok link
 
 ## Run Locally
@@ -45,13 +37,13 @@ To run this project, you will need to add the following environment variables to
 Clone the project
 
 ```bash
-  git clone https://github.com/Bharat-kr/openinapp-backend-task.git
+  git clone https://github.com/Bharat-kr/spyne-task.git
 ```
 
 Go to the project directory
 
 ```bash
-  cd openinapp-backend-task
+  cd spyne-task
 ```
 
 Install dependencies
