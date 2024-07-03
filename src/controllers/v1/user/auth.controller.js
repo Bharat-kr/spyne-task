@@ -7,6 +7,7 @@ const {
   unprocessableEntityResponse,
   unauthorizedResponse,
   successResponse,
+  createdSuccessResponse,
 } = require('../../../utils/response');
 
 const bcrypt = require('bcrypt');
@@ -50,6 +51,33 @@ const login = async (req, res) => {
   }
 };
 
+const signup = async (req, res) => {
+  try {
+    const { name, phone_number, email, password } = req.body;
+
+    if (!name || !phone_number || !email || !password)
+      return unprocessableEntityResponse(res, 'Please send proper values');
+
+    const [user, userErr] = await Repository.create({
+      tableName: DB_TABLES.USER,
+      createObject: {
+        name,
+        phone_number,
+        email,
+        password,
+      },
+    });
+
+    if (userErr) return serverErrorResponse(res, userErr);
+
+    return createdSuccessResponse(res, 'Signup Successfull', user);
+  } catch (err) {
+    logger.error(`Error in creating user ${err.message}`);
+    return serverErrorResponse(res, err.message);
+  }
+};
+
 module.exports = {
   login,
+  signup,
 };

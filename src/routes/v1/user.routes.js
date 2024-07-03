@@ -6,8 +6,11 @@ const router = express.Router();
 
 // READ
 router.get('/', middlewares.authToken, userController.getUser);
+router.get('/all', middlewares.authToken, userController.getAllUsers);
+router.get('/search', middlewares.authToken, userController.searchUser);
 
-// CREATE
-router.post('/', userController.createUser);
+// UPDATE
+router.patch('/update', middlewares.authToken, userController.updateUser);
+router.delete('/delete', middlewares.authToken, userController.deleteUser);
 
 module.exports = router;
