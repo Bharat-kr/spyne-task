@@ -5,4 +5,5 @@ module.exports = {
   DEV_SECRET: process.env.DEV_SECRET,
   BACKEND_SERVICE_PORT: process.env.BACKEND_SERVICE_PORT,
   DEPLOYED_BACKEND_HOST: process.env.DEPLOYED_BACKEND_HOST,
+  IMAGEKIT_API_KEY: process.env.IMAGEKIT_API_KEY,
 };

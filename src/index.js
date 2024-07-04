@@ -9,7 +9,7 @@ const port = process.env.BACKEND_SERVICE_PORT;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 sequelize
-  .sync()
+  .authenticate()
   .then(() => {
     logger.info('[CONNECTED TO DATABASE]');
     server.listen(port, () =>

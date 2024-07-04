@@ -12,5 +12,6 @@ router.get('/search', middlewares.authToken, userController.searchUser);
 // UPDATE
 router.patch('/update', middlewares.authToken, userController.updateUser);
 router.delete('/delete', middlewares.authToken, userController.deleteUser);
+router.post('/follow', middlewares.authToken, userController.followUser);
 
 module.exports = router;

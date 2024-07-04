@@ -9,10 +9,20 @@ const {
 
 const getUser = async (req, res) => {
   try {
-    delete req.user.password;
-    delete req.user.created_at;
-    delete req.user.updated_at;
-    return successResponse(res, 'User fetched Successfuly', req.user);
+    const { id: user_id } = req.user;
+
+    const [user, userErr] = await Repository.fetchOne({
+      tableName: DB_TABLES.USER,
+      query: {
+        id: user_id,
+      },
+    });
+    if (userErr) return serverErrorResponse(res, userErr);
+    delete user.password;
+    delete user.created_at;
+    delete user.updated_at;
+
+    return successResponse(res, 'User fetched Successfuly', user);
   } catch (err) {
     logger.error(`Error in creating user ${err.message}`);
     return serverErrorResponse(res, err.message);
@@ -104,7 +114,7 @@ const getAllUsers = async (req, res) => {
       extras: {
         offset,
         limit,
-        order: [['id', 'ASC']],
+        // order: [['id', 'ASC']],
       },
     });
     if (usersErr) return serverErrorResponse(res, usersErr);
@@ -115,10 +125,50 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const followUser = async (req, res) => {
+  try {
+    const { user_id } = req.body;
+    const { id: follower_id, status } = req.user;
+    if (status) {
+      const [follower, followerErr] = await Repository.create({
+        tableName: DB_TABLES.FOLLOWER,
+        createObject: {
+          user_id,
+          follower_id,
+        },
+      });
+    } else {
+      await Repository.destroy({
+        tableName: DB_TABLES.FOLLOWER,
+        where: {
+          user_id,
+          follower_id,
+        },
+      });
+    }
+    await Repository.update({
+      tableName: DB_TABLES.USER,
+      updateObject: {
+        follower_count: Sequelize.literal(
+          `follower_count ${status ? '+' : '-'} 1`
+        ),
+      },
+      query: {
+        id: user_id,
+      },
+    });
+    return successResponse(res, 'Successfully followed user', follower);
+  } catch (err) {
+    logger.error(`Error in following user ${err.message}`);
+    return serverErrorResponse(res, err.message);
+  }
+};
+
 module.exports = {
   getUser,
   updateUser,
   deleteUser,
   searchUser,
   getAllUsers,
+  followUser,
 };

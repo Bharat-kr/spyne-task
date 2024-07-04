@@ -1,35 +1,33 @@
 'use strict';
-
 // Packages
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, Sequelize) => {
-  class Hashtag extends Model {
-    static associate({ Hashtag_Discussion }) {
-      this.hasMany(Hashtag_Discussion, { foreignKey: 'hashtag_id' });
+  class Follower extends Model {
+    static associate({ User }) {
+      this.belongsTo(User, { foreignKey: 'user_id' });
+      // this.hasMany(User, { foreignKey: 'follower_id' });
     }
   }
-  Hashtag.init(
+  Follower.init(
     {
-      id: {
+      user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
       },
-      name: {
-        type: Sequelize.TEXT,
+      follower_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
     },
     {
       timestamps: true,
       sequelize,
-      tableName: 'hashtag',
-      modelName: 'Hashtag',
+      tableName: 'follower',
+      modelName: 'Follower',
       createdAt: 'created_at',
       updatedAt: 'updated_at',
     }
   );
-  return Hashtag;
+  return Follower;
 };

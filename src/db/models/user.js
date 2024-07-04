@@ -8,7 +8,9 @@ const { SALT_ROUNDS } = require('../../utils/config');
 
 module.exports = (sequelize, Sequelize) => {
   class User extends Model {
-    static associate({}) {}
+    static associate({ Discussion }) {
+      this.hasMany(Discussion, { foreignKey: 'user_id' });
+    }
   }
   User.init(
     {
@@ -55,6 +57,11 @@ module.exports = (sequelize, Sequelize) => {
             }
           },
         },
+      },
+      follower_count: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
       },
     },
     {

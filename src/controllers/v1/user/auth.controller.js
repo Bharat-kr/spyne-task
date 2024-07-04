@@ -14,14 +14,13 @@ const bcrypt = require('bcrypt');
 
 const login = async (req, res) => {
   try {
-    const { phone_number, password } = req.body;
-    if (!phone_number)
-      unprocessableEntityResponse(res, 'phone_number not found');
+    const { email, password } = req.body;
+    if (!email) unprocessableEntityResponse(res, 'email not found');
     if (!password) unprocessableEntityResponse(res, 'password not found');
 
     const [user, userErr] = await Repository.fetchOne({
       tableName: DB_TABLES.USER,
-      query: { phone_number },
+      query: { email },
     });
     if (userErr) return serverErrorResponse(res, userErr);
 
@@ -36,15 +35,16 @@ const login = async (req, res) => {
     // generate token
     const accessToken = jwtHelper.generate({
       id: user.id,
-      first_name: user.name,
-      phone_number: user.phone_number,
     });
 
     delete user.password;
     delete user.created_at;
     delete user.updated_at;
 
-    return successResponse(res, 'Login successful', { ...user, accessToken });
+    return successResponse(res, 'Login successful', {
+      ...user,
+      access_token: accessToken,
+    });
   } catch (err) {
     logger.error(`Error in login user ${err.message}`);
     return serverErrorResponse(res, err.message);
@@ -70,7 +70,11 @@ const signup = async (req, res) => {
 
     if (userErr) return serverErrorResponse(res, userErr);
 
-    return createdSuccessResponse(res, 'Signup Successfull', user);
+    return createdSuccessResponse(res, 'Signup Successfull', {
+      name: user.name,
+      phone_number: user.phone_number,
+      email: user.email,
+    });
   } catch (err) {
     logger.error(`Error in creating user ${err.message}`);
     return serverErrorResponse(res, err.message);
