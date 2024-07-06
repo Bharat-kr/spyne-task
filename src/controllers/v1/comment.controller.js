@@ -22,7 +22,7 @@ const getComments = async (req, res) => {
       // sending all comments of a discussion
       const [comments, commentsErr] = await Repository.fetchAll({
         tableName: DB_TABLES.COMMENT,
-        query: { discussion_id },
+        query: { discussion_id, comment_id: null },
       });
       if (commentsErr) return serverErrorResponse(res, commentsErr);
       return successResponse(res, 'Comments fetched successfully', comments);
@@ -36,14 +36,14 @@ const getComments = async (req, res) => {
 const postComment = async (req, res) => {
   try {
     const { id: user_id } = req.user;
-    const { discussion_id, content, content_id } = req.body;
+    const { discussion_id, content, comment_id } = req.body;
     const [comment, commentErr] = await Repository.create({
       tableName: DB_TABLES.COMMENT,
       createObject: {
         user_id,
         discussion_id,
         content,
-        content_id,
+        comment_id,
       },
     });
     if (commentErr) return serverErrorResponse(res, commentErr);
@@ -65,7 +65,7 @@ const updateComment = async (req, res) => {
       updateObject: { content },
     });
     if (commentErr) return serverErrorResponse(res, commentErr);
-    return successResponse(res, 'Comment updated successfully', comment);
+    return successResponse(res, 'Comment updated successfully');
   } catch (err) {
     logger.error(`Error in updating comment: ${err.message}`);
     return serverErrorResponse(res, err.message);
@@ -81,7 +81,7 @@ const deleteComment = async (req, res) => {
     });
     // DO recursive delete for all the comments that have this comment as parent
     if (commentErr) return serverErrorResponse(res, commentErr);
-    return successResponse(res, 'Comment deleted successfully', comment);
+    return successResponse(res, 'Comment deleted successfully');
   } catch (err) {
     logger.error(`Error in deleting comment: ${err.message}`);
     return serverErrorResponse(res, err.message);
