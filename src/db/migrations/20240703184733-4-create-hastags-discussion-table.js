@@ -8,7 +8,9 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'discussion',
+          model: {
+            tableName: 'discussion',
+          },
           key: 'id',
         },
       },
@@ -16,7 +18,9 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'hashtag',
+          model: {
+            tableName: 'hashtag',
+          },
           key: 'id',
         },
       },
@@ -35,8 +39,8 @@ module.exports = {
     // Add composite unique constraint
     await queryInterface.addConstraint('hashtag_discussion', {
       fields: ['discussion_id', 'hashtag_id'],
-      type: 'unique',
       name: 'unique_discussion_hashtag',
+      type: 'primary key',
     });
   },
 

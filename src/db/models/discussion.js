@@ -4,9 +4,14 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, Sequelize) => {
   class Discussion extends Model {
-    static associate({ User, Hashtag_Discussion }) {
+    static associate({ User, Hashtag }) {
       this.belongsTo(User, { foreignKey: 'user_id' });
-      this.hasMany(Hashtag_Discussion, { foreignKey: 'discussion_id' });
+      this.belongsToMany(Hashtag, {
+        through: 'hashtag_discussion',
+        sourceKey: 'id',
+        foreignKey: 'discussion_id',
+        as: 'hashtags',
+      });
     }
   }
   Discussion.init(

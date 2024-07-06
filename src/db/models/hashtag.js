@@ -5,8 +5,12 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, Sequelize) => {
   class Hashtag extends Model {
-    static associate({ Hashtag_Discussion }) {
-      this.hasMany(Hashtag_Discussion, { foreignKey: 'hashtag_id' });
+    static associate({ Discussion }) {
+      this.belongsToMany(Discussion, {
+        through: 'hashtag_discussion',
+        sourceKey: 'id',
+        foreignKey: 'hashtag_id',
+      });
     }
   }
   Hashtag.init(

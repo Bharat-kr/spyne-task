@@ -6,6 +6,11 @@ const middlewares = require('../../middlewares');
 const upload = multer({ storage: multer.memoryStorage() });
 
 router.get('/', middlewares.authToken, discussionController.getAllDiscussions);
+router.get(
+  '/:discussion_id',
+  middlewares.authToken,
+  discussionController.getDiscussion
+);
 router.post(
   '/',
   middlewares.authToken,

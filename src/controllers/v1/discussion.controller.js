@@ -18,20 +18,12 @@ const getAllDiscussions = async (req, res) => {
       query: {
         user_id,
       },
-      include: [
-        {
-          model: DB_TABLES.HASHTAG_DISCUSSION,
+      include: {
+        [DB_TABLES.HASHTAG]: {
+          attributes: ['name'],
           as: 'hashtags',
-          attributes: ['hashtag_id'],
-          include: DB_TABLES.HASHTAG
-          //   {
-          //     model: DB_TABLES.HASHTAG,
-          //     as: 'hashtag',
-          //     attributes: ['name'],
-          //   },
-          // ],
         },
-      ],
+      },
     });
     if (discussionsErr) return serverErrorResponse(res, discussionsErr);
 
@@ -42,6 +34,28 @@ const getAllDiscussions = async (req, res) => {
     );
   } catch (err) {
     logger.error(`Error in fetching all discussions ${err.message}`);
+    return serverErrorResponse(res, err.message);
+  }
+};
+
+const getDiscussion = async (req, res) => {
+  try {
+    const { discussion_id } = req.params;
+    const [discussion, discussionErr] = await Repository.fetchOne({
+      tableName: DB_TABLES.DISCUSSION,
+      query: { id: discussion_id },
+      include: {
+        [DB_TABLES.HASHTAG]: {
+          attributes: ['name'],
+          as: 'hashtags',
+        },
+      },
+    });
+
+    if (discussionErr) return serverErrorResponse(res, discussionErr);
+    return successResponse(res, 'Discussion fetched successfully', discussion);
+  } catch (err) {
+    logger.error(`Error in fetching discussion ${err.message}`);
     return serverErrorResponse(res, err.message);
   }
 };
@@ -114,13 +128,14 @@ const createDiscussion = async (req, res) => {
 
 const updateDiscussion = async (req, res) => {
   try {
+    const { id: user_id } = req.user;
     const { discussion_id } = req.params;
     let { text, hashtags } = req.body;
-    hashtags = hashtags.split(',');
+    if (hashtags) hashtags = hashtags.split(',');
 
     const [discussionData, discussionDataErr] = await Repository.fetchOne({
       tableName: DB_TABLES.DISCUSSION,
-      query: { id: discussion_id },
+      query: { id: discussion_id, user_id },
     });
 
     if (discussionDataErr) return serverErrorResponse(res, discussionDataErr);
@@ -238,6 +253,7 @@ const deleteDiscussion = async (req, res) => {
 
 const discussionController = {
   getAllDiscussions,
+  getDiscussion,
   createDiscussion,
   updateDiscussion,
   deleteDiscussion,
