@@ -29,6 +29,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      imagekit_file_id: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
     },
     {
       timestamps: true,

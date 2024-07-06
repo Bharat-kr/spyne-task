@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('hastag_discussion', {
+    await queryInterface.createTable('hashtag_discussion', {
       discussion_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -12,11 +12,11 @@ module.exports = {
           key: 'id',
         },
       },
-      hastag_id: {
+      hashtag_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'hastag',
+          model: 'hashtag',
           key: 'id',
         },
       },
@@ -31,9 +31,22 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
     });
+
+    // Add composite unique constraint
+    await queryInterface.addConstraint('hashtag_discussion', {
+      fields: ['discussion_id', 'hashtag_id'],
+      type: 'unique',
+      name: 'unique_discussion_hashtag',
+    });
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('hastag_discussion');
+    // Remove composite unique constraint
+    await queryInterface.removeConstraint(
+      'hashtag_discussion',
+      'unique_discussion_hashtag'
+    );
+
+    await queryInterface.dropTable('hashtag_discussion');
   },
 };

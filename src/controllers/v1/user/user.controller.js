@@ -157,7 +157,7 @@ const followUser = async (req, res) => {
         id: user_id,
       },
     });
-    return successResponse(res, 'Successfully followed user', follower);
+    return successResponse(res, 'Successfully followed user');
   } catch (err) {
     logger.error(`Error in following user ${err.message}`);
     return serverErrorResponse(res, err.message);

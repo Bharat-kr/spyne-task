@@ -1,14 +1,14 @@
-const jwtHelper = require('../../../helpers/jwt');
-const Repository = require('../../../repository');
-const logger = require('../../../utils/logger');
-const { DB_TABLES } = require('../../../utils/modelEnums');
+const jwtHelper = require('../../helpers/jwt');
+const Repository = require('../../repository');
+const logger = require('../../utils/logger');
+const { DB_TABLES } = require('../../utils/modelEnums');
 const {
   serverErrorResponse,
   unprocessableEntityResponse,
   unauthorizedResponse,
   successResponse,
   createdSuccessResponse,
-} = require('../../../utils/response');
+} = require('../../utils/response');
 
 const createDiscussion = async (req, res) => {
   try {

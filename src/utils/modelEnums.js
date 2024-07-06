@@ -1,10 +1,24 @@
-const { Sub_Task, Task, User } = require('../db/models');
+const {
+  Discussion,
+  Follower,
+  Hashtag,
+  Hashtag_Discussion,
+  User,
+} = require('../db/models');
 
-const DB_TABLES = { SUB_TASK: 'sub_task', TASK: 'task', USER: 'user' };
+const DB_TABLES = {
+  DISCUSSION: 'discussion',
+  FOLLOWER: 'follower',
+  HASHTAG: 'hashtag',
+  HASHTAG_DISCUSSION: 'hashtag_discussion',
+  USER: 'user',
+};
 
 const DB_MODELS = {
-  sub_task: Sub_Task,
-  task: Task,
+  discussion: Discussion,
+  follower: Follower,
+  hashtag: Hashtag,
+  hashtag_discussion: Hashtag_Discussion,
   user: User,
 };
 
