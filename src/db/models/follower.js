@@ -6,7 +6,6 @@ module.exports = (sequelize, Sequelize) => {
   class Follower extends Model {
     static associate({ User }) {
       this.belongsTo(User, { foreignKey: 'user_id' });
-      // this.hasMany(User, { foreignKey: 'follower_id' });
     }
   }
   Follower.init(

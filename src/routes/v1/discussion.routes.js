@@ -23,6 +23,11 @@ router.patch(
   upload.single('image'),
   discussionController.updateDiscussion
 );
+router.patch(
+  '/:discussion_id/like',
+  middlewares.authToken,
+  discussionController.likeDiscussion
+);
 router.delete(
   '/:discussion_id',
   middlewares.authToken,

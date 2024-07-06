@@ -19,7 +19,6 @@ const getAllDiscussions = async (req, res) => {
     if (hashtags) hashtags = hashtags.split(',');
     else hashtags = [];
     if (hashtags.length > 0) {
-      console.log('here');
       const [discussions, discussionsErr] = await Repository.fetchAll({
         tableName: DB_TABLES.DISCUSSION,
         include: {
@@ -254,6 +253,32 @@ const updateDiscussion = async (req, res) => {
     return serverErrorResponse(res, err.message);
   }
 };
+const likeDiscussion = async (req, res) => {
+  try {
+    const { discussion_id } = req.params;
+    const { liked } = req.query;
+    const [discussion, existingLikeErr] = await Repository.fetchOne({
+      tableName: DB_TABLES.DISCUSSION,
+      query: { id: discussion_id },
+    });
+    if (existingLikeErr) return serverErrorResponse(res, existingLikeErr);
+    const [, likeErr] = await Repository.update({
+      tableName: DB_TABLES.DISCUSSION,
+      query: { id: discussion_id },
+      updateObject: {
+        likes_count:
+          liked === 'true'
+            ? discussion.likes_count + 1
+            : Math.max(discussion.likes_count - 1, 0), //although it is not possible but likes can't be less than zero
+      },
+    });
+    if (likeErr) return serverErrorResponse(res, likeErr);
+    return successResponse(res, 'Discussion liked successfully');
+  } catch (err) {
+    logger.error(`Error in liking discussion ${err.message}`);
+    return serverErrorResponse(res, err.message);
+  }
+};
 
 const deleteDiscussion = async (req, res) => {
   try {
@@ -292,6 +317,7 @@ const discussionController = {
   getDiscussion,
   createDiscussion,
   updateDiscussion,
+  likeDiscussion,
   deleteDiscussion,
 };
 

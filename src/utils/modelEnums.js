@@ -1,4 +1,5 @@
 const {
+  Comment,
   Discussion,
   Follower,
   Hashtag,
@@ -7,6 +8,7 @@ const {
 } = require('../db/models');
 
 const DB_TABLES = {
+  COMMENT: 'comment',
   DISCUSSION: 'discussion',
   FOLLOWER: 'follower',
   HASHTAG: 'hashtag',
@@ -15,6 +17,7 @@ const DB_TABLES = {
 };
 
 const DB_MODELS = {
+  comment: Comment,
   discussion: Discussion,
   follower: Follower,
   hashtag: Hashtag,

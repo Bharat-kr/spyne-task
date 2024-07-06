@@ -1,20 +1,16 @@
 'use strict';
 // Packages
 const { Model } = require('sequelize');
+const User = require('./user');
+const Discussion = require('./discussion');
 
 module.exports = (sequelize, Sequelize) => {
-  class Discussion extends Model {
-    static associate({ User, Hashtag }) {
+  class Comment extends Model {
+    static associate({ User }) {
       this.belongsTo(User, { foreignKey: 'user_id' });
-      this.belongsToMany(Hashtag, {
-        through: 'hashtag_discussion',
-        sourceKey: 'id',
-        foreignKey: 'discussion_id',
-        as: 'hashtags',
-      });
     }
   }
-  Discussion.init(
+  Comment.init(
     {
       id: {
         type: Sequelize.INTEGER,
@@ -25,18 +21,31 @@ module.exports = (sequelize, Sequelize) => {
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        references: {
+          model: User,
+          key: 'id',
+        },
       },
-      text: {
+      discussion_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: Discussion,
+          key: 'id',
+        },
+      },
+      comment_id: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: Comment,
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+      },
+      content: {
         type: Sequelize.TEXT,
         allowNull: false,
-      },
-      image: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      imagekit_file_id: {
-        type: Sequelize.STRING,
-        allowNull: true,
       },
       likes_count: {
         type: Sequelize.INTEGER,
@@ -47,11 +56,11 @@ module.exports = (sequelize, Sequelize) => {
     {
       timestamps: true,
       sequelize,
-      tableName: 'discussion',
-      modelName: 'Discussion',
+      tableName: 'comment',
+      modelName: 'Comment',
       createdAt: 'created_at',
       updatedAt: 'updated_at',
     }
   );
-  return Discussion;
+  return Comment;
 };
