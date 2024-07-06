@@ -5,7 +5,6 @@ const { DB_TABLES } = require('../../utils/modelEnums');
 const {
   serverErrorResponse,
   unprocessableEntityResponse,
-  unauthorizedResponse,
   successResponse,
   createdSuccessResponse,
 } = require('../../utils/response');
@@ -101,17 +100,16 @@ const createDiscussion = async (req, res) => {
     if (discussionHashtagsErr)
       return serverErrorResponse(res, discussionHashtagsErr);
 
-    const [hashtagDiscussion, hashtagDiscussionErr] =
-      await Repository.bulkCreate({
-        tableName: DB_TABLES.HASHTAG_DISCUSSION,
-        createObject: discussionHashtags.map((hashtag) => ({
-          discussion_id: discussion.id,
-          hashtag_id: hashtag.id,
-        })),
-        extras: {
-          fields: ['discussion_id', 'hashtag_id'],
-        },
-      });
+    const [, hashtagDiscussionErr] = await Repository.bulkCreate({
+      tableName: DB_TABLES.HASHTAG_DISCUSSION,
+      createObject: discussionHashtags.map((hashtag) => ({
+        discussion_id: discussion.id,
+        hashtag_id: hashtag.id,
+      })),
+      extras: {
+        fields: ['discussion_id', 'hashtag_id'],
+      },
+    });
 
     if (hashtagDiscussionErr)
       return serverErrorResponse(res, hashtagDiscussionErr);
@@ -132,6 +130,7 @@ const updateDiscussion = async (req, res) => {
     const { discussion_id } = req.params;
     let { text, hashtags } = req.body;
     if (hashtags) hashtags = hashtags.split(',');
+    else hashtags = [];
 
     const [discussionData, discussionDataErr] = await Repository.fetchOne({
       tableName: DB_TABLES.DISCUSSION,
@@ -142,7 +141,7 @@ const updateDiscussion = async (req, res) => {
 
     const updateObj = {};
 
-    if (text) updateObj.text = text;
+    updateObj.text = text;
 
     if (req.file) {
       await imagekit.deleteFile(discussionData.imagekit_file_id);
@@ -156,7 +155,7 @@ const updateDiscussion = async (req, res) => {
       updateObj.image = url;
       updateObj.imagekit_file_id = fileId;
     }
-    const [discussion, discussionErr] = await Repository.update({
+    const [, discussionErr] = await Repository.update({
       tableName: DB_TABLES.DISCUSSION,
       query: { id: discussion_id },
       updateObject: updateObj,
@@ -175,10 +174,10 @@ const updateDiscussion = async (req, res) => {
       (hashtag) => !hashtags.includes(hashtag.name)
     );
 
-    const [removedMappings, removedMappingsErr] = await Repository.destroy({
+    const [, removedMappingsErr] = await Repository.destroy({
       tableName: DB_TABLES.HASHTAG_DISCUSSION,
       query: removedHashtags.map((hashtag) => ({
-        discussion_id: discussion.id,
+        discussion_id: discussion_id,
         hashtag_id: hashtag.id,
       })),
     });
@@ -198,15 +197,12 @@ const updateDiscussion = async (req, res) => {
     if (newHashtagObjectsErr)
       return serverErrorResponse(res, newHashtagObjectsErr);
 
-    const [newMappings, newMappingsErr] = await Repository.bulkCreate({
+    const [, newMappingsErr] = await Repository.bulkCreate({
       tableName: DB_TABLES.HASHTAG_DISCUSSION,
       createObject: newHashtagObjects.map((hashtag) => ({
-        discussion_id: discussion.id,
+        discussion_id: discussion_id,
         hashtag_id: hashtag.id,
       })),
-      extras: {
-        fields: ['discussion_id', 'hashtag_id'],
-      },
     });
 
     if (newMappingsErr) return serverErrorResponse(res, newMappingsErr);
@@ -226,23 +222,22 @@ const deleteDiscussion = async (req, res) => {
       query: { id: discussion_id },
     });
     if (discussionDataErr) return serverErrorResponse(res, discussionDataErr);
-    const [discussionHashtags, discussionHashtagsErr] =
-      await Repository.destroy({
-        tableName: DB_TABLES.HASHTAG_DISCUSSION,
-        query: { discussion_id },
-      });
+    const [, discussionHashtagsErr] = await Repository.destroy({
+      tableName: DB_TABLES.HASHTAG_DISCUSSION,
+      query: { discussion_id },
+    });
 
     if (discussionHashtagsErr)
       return serverErrorResponse(res, discussionHashtagsErr);
 
-    const [discussion, discussionErr] = await Repository.destroy({
+    const [, discussionErr] = await Repository.destroy({
       tableName: DB_TABLES.DISCUSSION,
       query: { id: discussion_id },
     });
 
     if (discussionErr) return serverErrorResponse(res, discussionErr);
 
-    const result = await imagekit.deleteFile(discussionData.imagekit_file_id);
+    await imagekit.deleteFile(discussionData.imagekit_file_id);
 
     return successResponse(res, 'Discussion deleted successfully');
   } catch (err) {
