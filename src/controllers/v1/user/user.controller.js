@@ -80,7 +80,7 @@ const deleteUser = async (req, res) => {
 
 const searchUser = async (req, res) => {
   try {
-    const { name, page, limit } = req.query;
+    const { name, page = 1, limit = 10 } = req.query;
     const offset = (page - 1) * limit;
     const [users, usersErr] = await Repository.fetchAll({
       tableName: DB_TABLES.USER,

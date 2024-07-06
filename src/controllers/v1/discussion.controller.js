@@ -12,25 +12,66 @@ const {
 const getAllDiscussions = async (req, res) => {
   try {
     const { id: user_id } = req.user;
-    const [discussions, discussionsErr] = await Repository.fetchAll({
-      tableName: DB_TABLES.DISCUSSION,
-      query: {
-        user_id,
-      },
-      include: {
-        [DB_TABLES.HASHTAG]: {
-          attributes: ['name'],
-          as: 'hashtags',
-        },
-      },
-    });
-    if (discussionsErr) return serverErrorResponse(res, discussionsErr);
+    let { hashtags, page = 1, limit = 10 } = req.query;
 
-    return successResponse(
-      res,
-      'All discussions fetched successfully',
-      discussions
-    );
+    const offset = (page - 1) * limit;
+
+    if (hashtags) hashtags = hashtags.split(',');
+    else hashtags = [];
+    if (hashtags.length > 0) {
+      console.log('here');
+      const [discussions, discussionsErr] = await Repository.fetchAll({
+        tableName: DB_TABLES.DISCUSSION,
+        include: {
+          [DB_TABLES.HASHTAG]: {
+            attributes: ['name'],
+            as: 'hashtags',
+            where: {
+              name: hashtags,
+            },
+            required: true,
+          },
+        },
+        extras: {
+          offset,
+          limit,
+          order: [['id', 'ASC']],
+        },
+      });
+
+      if (discussionsErr) return serverErrorResponse(res, discussionsErr);
+
+      return successResponse(
+        res,
+        'All discussions fetched successfully',
+        discussions
+      );
+    } else {
+      const [discussions, discussionsErr] = await Repository.fetchAll({
+        tableName: DB_TABLES.DISCUSSION,
+        query: {
+          user_id,
+        },
+        include: {
+          [DB_TABLES.HASHTAG]: {
+            attributes: ['name'],
+            as: 'hashtags',
+          },
+        },
+        extras: {
+          offset,
+          limit,
+          order: [['id', 'ASC']],
+        },
+      });
+      if (discussionsErr) return serverErrorResponse(res, discussionsErr);
+
+      return successResponse(
+        res,
+        'All discussions fetched successfully',
+        discussions
+      );
+    }
   } catch (err) {
     logger.error(`Error in fetching all discussions ${err.message}`);
     return serverErrorResponse(res, err.message);
