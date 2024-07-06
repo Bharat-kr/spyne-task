@@ -12,7 +12,7 @@ const getComments = async (req, res) => {
     const { discussion_id, comment_id } = req.query;
     if (comment_id) {
       // sending replies of a comment
-      const [comment, commentErr] = await Repository.fetchOne({
+      const [comment, commentErr] = await Repository.fetchAll({
         tableName: DB_TABLES.COMMENT,
         query: { comment_id, discussion_id },
       });
@@ -37,6 +37,14 @@ const postComment = async (req, res) => {
   try {
     const { id: user_id } = req.user;
     const { discussion_id, content, comment_id } = req.body;
+
+    if (comment_id) {
+      const [comment, commentErr] = await Repository.fetchOne({
+        tableName: DB_TABLES.COMMENT,
+        query: { id: comment_id },
+      });
+      if (commentErr) return serverErrorResponse(res, commentErr);
+    }
     const [comment, commentErr] = await Repository.create({
       tableName: DB_TABLES.COMMENT,
       createObject: {

@@ -11,8 +11,9 @@ module.exports = {
         primaryKey: true,
       },
       name: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(20),
         allowNull: false,
+        unique: true,
       },
       created_at: {
         type: Sequelize.DATE,

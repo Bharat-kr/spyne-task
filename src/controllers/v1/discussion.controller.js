@@ -253,6 +253,7 @@ const updateDiscussion = async (req, res) => {
     return serverErrorResponse(res, err.message);
   }
 };
+
 const likeDiscussion = async (req, res) => {
   try {
     const { discussion_id } = req.params;
@@ -288,13 +289,8 @@ const deleteDiscussion = async (req, res) => {
       query: { id: discussion_id },
     });
     if (discussionDataErr) return serverErrorResponse(res, discussionDataErr);
-    const [, discussionHashtagsErr] = await Repository.destroy({
-      tableName: DB_TABLES.HASHTAG_DISCUSSION,
-      query: { discussion_id },
-    });
 
-    if (discussionHashtagsErr)
-      return serverErrorResponse(res, discussionHashtagsErr);
+    await imagekit.deleteFile(discussionData.imagekit_file_id);
 
     const [, discussionErr] = await Repository.destroy({
       tableName: DB_TABLES.DISCUSSION,
@@ -302,8 +298,6 @@ const deleteDiscussion = async (req, res) => {
     });
 
     if (discussionErr) return serverErrorResponse(res, discussionErr);
-
-    await imagekit.deleteFile(discussionData.imagekit_file_id);
 
     return successResponse(res, 'Discussion deleted successfully');
   } catch (err) {

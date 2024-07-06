@@ -10,6 +10,7 @@ module.exports = (sequelize, Sequelize) => {
         through: 'hashtag_discussion',
         sourceKey: 'id',
         foreignKey: 'hashtag_id',
+        onDelete: 'CASCADE',
       });
     }
   }
@@ -22,8 +23,9 @@ module.exports = (sequelize, Sequelize) => {
         primaryKey: true,
       },
       name: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(20),
         allowNull: false,
+        unique: true,
       },
     },
     {

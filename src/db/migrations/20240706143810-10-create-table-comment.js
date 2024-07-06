@@ -19,6 +19,7 @@ module.exports = {
           },
           key: 'id',
         },
+        onDelete: 'CASCADE',
       },
       discussion_id: {
         type: Sequelize.INTEGER,
@@ -29,6 +30,7 @@ module.exports = {
           },
           key: 'id',
         },
+        onDelete: 'CASCADE',
       },
       comment_id: {
         type: Sequelize.INTEGER,
@@ -38,8 +40,8 @@ module.exports = {
             tableName: 'comment',
           },
           key: 'id',
-          onDelete: 'CASCADE',
         },
+        onDelete: 'CASCADE',
       },
       content: {
         type: Sequelize.TEXT,

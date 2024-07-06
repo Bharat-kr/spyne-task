@@ -6,8 +6,16 @@ const Discussion = require('./discussion');
 
 module.exports = (sequelize, Sequelize) => {
   class Comment extends Model {
-    static associate({ User }) {
-      this.belongsTo(User, { foreignKey: 'user_id' });
+    static associate({ Discussion, User, Comment }) {
+      this.belongsTo(User, { foreignKey: 'user_id', onDelete: 'CASCADE' });
+      this.belongsTo(Discussion, {
+        foreignKey: 'discussion_id',
+        onDelete: 'CASCADE',
+      });
+      this.belongsTo(Comment, {
+        foreignKey: 'comment_id',
+        onDelete: 'CASCADE',
+      });
     }
   }
   Comment.init(

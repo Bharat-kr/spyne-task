@@ -8,9 +8,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'user',
+          model: { tableName: 'user' },
           key: 'id',
         },
+        onDelete: 'CASCADE',
       },
       follower_id: {
         type: Sequelize.INTEGER,
@@ -19,6 +20,7 @@ module.exports = {
           model: 'user',
           key: 'id',
         },
+        onDelete: 'CASCADE',
       },
       created_at: {
         type: Sequelize.DATE,

@@ -13,6 +13,7 @@ module.exports = {
           },
           key: 'id',
         },
+        onDelete: 'CASCADE',
       },
       hashtag_id: {
         type: Sequelize.INTEGER,

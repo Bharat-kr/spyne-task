@@ -14,9 +14,12 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'User',
+          model: {
+            tableName: 'user',
+          },
           key: 'id',
         },
+        onDelete: 'CASCADE',
       },
       text: {
         type: Sequelize.TEXT,

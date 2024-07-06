@@ -13,7 +13,7 @@
     "db:migrate:undo": "npx sequelize-cli db:migrate:undo",
     "db:seed:all": "npx sequelize db:seed:all",
     "db:seed:undo:all": "npx sequelize db:seed:undo:all",
-    "db:reset": "NODE_ENV=development sequelize db:drop && sequelize db:create && sequelize db:migrate && sequelize db:seed:all",
+    "db:reset": "NODE_ENV=development sequelize db:create && sequelize db:migrate && sequelize db:seed:all",
     "dev:generate:modelEnums": "NODE_ENV=development node src/utils/generateModelEnums.js",
     "prod:generate:modelEnums": "NODE_ENV=production node src/utils/generateModelEnums.js"
   },
