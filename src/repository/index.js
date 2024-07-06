@@ -79,6 +79,8 @@ const fetchAll = async ({ tableName, query, include = [], extras, t }) => {
 
     [include, errForInclude] = SequelizeHelper.getIncludeArray(include);
 
+    console.log('include ', include);
+
     if (errForInclude) return [null, errForInclude];
 
     const data = await modelName.findAll({
