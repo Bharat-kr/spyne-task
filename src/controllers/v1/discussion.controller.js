@@ -84,7 +84,38 @@ const updateDiscussion = async (req, res) => {
   }
 };
 
-const deleteDiscussion = async (req, res) => {};
+const deleteDiscussion = async (req, res) => {
+  try {
+    const { discussion_id } = req.params;
+    const [discussionData, discussionDataErr] = await Repository.fetchOne({
+      tableName: DB_TABLES.DISCUSSION,
+      query: { id: discussion_id },
+    });
+    if (discussionDataErr) return serverErrorResponse(res, discussionDataErr);
+    const [discussionHashtags, discussionHashtagsErr] =
+      await Repository.destroy({
+        tableName: DB_TABLES.HASHTAG_DISCUSSION,
+        query: { discussion_id },
+      });
+
+    if (discussionHashtagsErr)
+      return serverErrorResponse(res, discussionHashtagsErr);
+
+    const [discussion, discussionErr] = await Repository.destroy({
+      tableName: DB_TABLES.DISCUSSION,
+      query: { id: discussion_id },
+    });
+
+    if (discussionErr) return serverErrorResponse(res, discussionErr);
+
+    const result = await imagekit.deleteFile(discussionData.imagekit_file_id);
+
+    return successResponse(res, 'Discussion deleted successfully');
+  } catch (err) {
+    logger.error(`Error in deleting discussion ${err.message}`);
+    return serverErrorResponse(res, err.message);
+  }
+};
 
 const discussionController = {
   createDiscussion,

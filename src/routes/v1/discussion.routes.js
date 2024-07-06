@@ -6,18 +6,19 @@ const middlewares = require('../../middlewares');
 const upload = multer({ storage: multer.memoryStorage() });
 
 router.post(
-  '/create',
+  '/',
   middlewares.authToken,
   upload.single('image'),
   discussionController.createDiscussion
 );
-router.post(
-  '/update/:discussion_id',
+router.patch(
+  '/:discussion_id',
   middlewares.authToken,
+  upload.single('image'),
   discussionController.updateDiscussion
 );
-router.post(
-  '/delete/:discussion_id',
+router.delete(
+  '/:discussion_id',
   middlewares.authToken,
   discussionController.deleteDiscussion
 );
