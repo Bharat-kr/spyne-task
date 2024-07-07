@@ -72,6 +72,14 @@ Install dependencies
   npm install
 ```
 
+Create ENV
+
+```bash
+  touch .env.development
+```
+> copy the values from env example to env development
+
+
 Install Sequelize-cli
 
 ```bash
@@ -100,17 +108,6 @@ Run Migrations and Seeders
   npm run db:migrate:up
   npm run db:seed:all
 ```
-
-Setup ngrok
-
-> open another terminal
-
-```bash
-  ngrok http BACKEND_SERVICE_PORT
-```
-
-> replace the BACKEND_SERVICE_PORT with the value you have put in env
-
 Start the server
 
 ```bash
