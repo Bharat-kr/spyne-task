@@ -2,11 +2,29 @@
 
 This Task tries to satisfies all the points assigned in the SPYNE backend assignment.
 
+# Deployed URL : 
+https://spyne-task.onrender.com/
+
+# Postman collection URL :
+https://documenter.getpostman.com/view/16916560/2sA3e1BVGn
+
 ## Tech Stack
 
 **Server:** Node, Express
 
 **Database:** MySql
+
+## LLD
+
+### Database Structure
+![Database Structure](./assests/db_structure.png)
+
+### Create Discussion
+![Database Structure](./assests/create_discussion_lld.png)
+
+### Delete Discussion
+![Database Structure](./assests/delete_discussion_lld.png)
+
 
 ## Environment Variables
 
@@ -30,7 +48,9 @@ To run this project, you will need to add the following environment variables to
 
 `JWT_SECRET` : Secret for JWT CREATION e.g. "adasdsd"
 
-`DEPLOYED_BACKEND_HOST` : Publically accessible host of the backend can be a deployed ip or a ngrok link
+`IMAGEKIT_API_PRIVATE_KEY` : Image kit private key from imagekit dashboard
+
+`IMAGEKIT_API_PUBLIC_KEY` : Image kit public Key from image kit dashboard
 
 ## Run Locally
 
@@ -90,10 +110,6 @@ Setup ngrok
 ```
 
 > replace the BACKEND_SERVICE_PORT with the value you have put in env
-
-After creation of the ngrok update the twilio accounts webhook links with `{{ngroklink}}/v1/twilio/voice`
-
-> Update the env DEPLOYED_HOST_NAME with the {{ngroklink}}
 
 Start the server
 
