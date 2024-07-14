@@ -1,3 +1,4 @@
+const { Sequelize } = require('../../db/models');
 const Repository = require('../../repository');
 const imagekit = require('../../services/imagekit.service');
 const logger = require('../../utils/logger');
@@ -11,8 +12,7 @@ const {
 
 const getAllDiscussions = async (req, res) => {
   try {
-    const { id: user_id } = req.user;
-    let { hashtags, page = 1, limit = 10 } = req.query;
+    let { hashtags, page = 1, limit = 10, text } = req.query;
 
     const offset = (page - 1) * limit;
 
@@ -21,6 +21,7 @@ const getAllDiscussions = async (req, res) => {
     if (hashtags.length > 0) {
       const [discussions, discussionsErr] = await Repository.fetchAll({
         tableName: DB_TABLES.DISCUSSION,
+        query: Sequelize.literal('MATCH (text) AGAINST (:name)'),
         include: {
           [DB_TABLES.HASHTAG]: {
             attributes: ['name'],
@@ -35,6 +36,9 @@ const getAllDiscussions = async (req, res) => {
           offset,
           limit,
           order: [['id', 'ASC']],
+          replacements: {
+            name: text,
+          },
         },
       });
 
@@ -48,9 +52,7 @@ const getAllDiscussions = async (req, res) => {
     } else {
       const [discussions, discussionsErr] = await Repository.fetchAll({
         tableName: DB_TABLES.DISCUSSION,
-        query: {
-          user_id,
-        },
+        query: Sequelize.literal('MATCH (text) AGAINST (:name)'),
         include: {
           [DB_TABLES.HASHTAG]: {
             attributes: ['name'],
@@ -61,6 +63,9 @@ const getAllDiscussions = async (req, res) => {
           offset,
           limit,
           order: [['id', 'ASC']],
+          replacements: {
+            name: text,
+          },
         },
       });
       if (discussionsErr) return serverErrorResponse(res, discussionsErr);

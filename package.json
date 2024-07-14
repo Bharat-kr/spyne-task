@@ -9,7 +9,7 @@
     "lint": "npx prettier --check .",
     "format": "npx prettier --write .",
     "prepare": "npx husky install",
-    "db:migrate:up": "NODE_ENV=development && npx sequelize-cli db:migrate",
+    "db:migrate:up": "NODE_ENV=development sequelize-cli db:migrate",
     "db:migrate:undo": "NODE_ENV=development && npx sequelize-cli db:migrate:undo",
     "db:seed:all": "NODE_ENV=development && npx sequelize db:seed:all",
     "db:seed:undo:all": "NODE_ENV=development && npx sequelize db:seed:undo:all",
